@@ -1,30 +1,20 @@
 package com.employee;
 
-import static com.employee.constant.EmployeeConstants.CONNECTION_URL;
-import static com.employee.constant.EmployeeConstants.JDBC_DRIVER;
+import javax.sql.DataSource;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-
-import com.employees.Connections;
-import com.employees.impl.ConnectionImpl;
+import com.employee.connections.SQLConnections;
+import com.employees.impl.MySQLTemplate;
+import com.pojo.Employee;
 
 public class App {
 
 	public static void main(String[] args) {
-		Connections connections = new ConnectionImpl(getConnection());
-		// connections.createRecord();
-		connections.getRecord();
-	}
-
-	private static Connection getConnection() {
-
-		try {
-			Class.forName(JDBC_DRIVER);
-			return DriverManager.getConnection(CONNECTION_URL, "root", "root");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+		SQLConnections sqlConnections = new SQLConnections();
+		DataSource dataSource = sqlConnections.getDataSource();
+		MySQLTemplate mySQLTemplate = new MySQLTemplate(dataSource);
+		boolean isCreated = mySQLTemplate.createTableIfNotExist("employee", Employee.class);
+		System.out.println(isCreated ? "Successfully Created table." : "Not able to create table this time.");
+		boolean isInserted = mySQLTemplate.insert(new Employee("Aviral", "27", "USA"), "employee", Employee.class);
+		System.out.println(isInserted ? "Successfully inserted into the table." : "Not able to insert into the table.");
 	}
 }

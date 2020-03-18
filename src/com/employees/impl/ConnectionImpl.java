@@ -75,4 +75,10 @@ public class ConnectionImpl implements Connections {
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void createTable() {
+
+		
+	}
 }
